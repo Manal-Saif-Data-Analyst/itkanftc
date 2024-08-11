@@ -13,12 +13,14 @@ public void runOpMode() {
 	frontRight = hardwareMap.get(DcMotor.class,"fr");
 
 	waitForStart();
-
+		  while (opModeIsActive()){
+      
 		if(gamepad1.dpad_up) {
-		   frontLeft.setPower(0.5);
-		   frontRight.setPower(0.5);
-		   backLeft.setPower(0.5);
-		   backRight.setPower(0.5);
+		    frontLeft.setPower(-0.7);
+        	    frontRight.setPower(0.7);
+        	    backLeft.setPower(0.7);
+         	    backRight.setPower(0.7);
+          	      sleep(1000);
 		   }
 		else if(gamepad1.dpad_down) {
 		   frontLeft.setPower(-0.5);
