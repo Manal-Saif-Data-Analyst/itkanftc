@@ -1,0 +1,71 @@
+//from chatgpt take lightly lmao
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+
+@TeleOp(name = "TeleOp with Intake and Outtake", group = "TeleOp")
+public class TeleOpWithIntakeOuttake extends LinearOpMode {
+
+    // Motor declarations for driving and intake
+    DcMotor backLeft;
+    DcMotor backRight;
+    DcMotor frontLeft;
+    DcMotor frontRight;
+    DcMotor intakeMotor;
+
+    @Override
+    public void runOpMode() {
+
+        // Initialize the drive motors
+        backLeft = hardwareMap.get(DcMotor.class, "bl");
+        backRight = hardwareMap.get(DcMotor.class, "br");
+        frontLeft = hardwareMap.get(DcMotor.class, "fl");
+        frontRight = hardwareMap.get(DcMotor.class, "fr");
+
+        // Initialize the intake motor
+        intakeMotor = hardwareMap.get(DcMotor.class, "intake");
+
+        // Reverse the left motors
+        backLeft.setDirection(DcMotor.Direction.REVERSE);
+        frontLeft.setDirection(DcMotor.Direction.REVERSE);
+
+        waitForStart();
+
+        // Run until the end of the match (driver presses STOP)
+        while (opModeIsActive()) {
+
+            // Read joystick values
+            float move = -gamepad1.right_stick_y;  // Forward/Backward from the right stick Y-axis
+            float strafe = gamepad1.left_stick_x;  // Left/Right from the left stick X-axis
+
+            // Combine the joystick inputs for mecanum or omniwheel movement
+            float leftFrontPower = move + strafe;
+            float rightFrontPower = move - strafe;
+            float leftBackPower = move + strafe;
+            float rightBackPower = move - strafe;
+
+            // Set the power to the motors
+            frontLeft.setPower(leftFrontPower);
+            frontRight.setPower(rightFrontPower);
+            backLeft.setPower(leftBackPower);
+            backRight.setPower(rightBackPower);
+
+            // Intake/Outtake control using triggers
+            if (gamepad1.right_trigger > 0.1) {
+                intakeMotor.setPower(1.0);  // Intake action
+            } else if (gamepad1.left_trigger > 0.1) {
+                intakeMotor.setPower(-1.0);  // Outtake action
+            } else {
+                intakeMotor.setPower(0.0);  // Stop intake/outtake
+            }
+
+            // Telemetry for debugging
+            telemetry.addData("Move (Y)", move);
+            telemetry.addData("Strafe (X)", strafe);
+            telemetry.addData("Intake Power", intakeMotor.getPower());
+            telemetry.update();
+        }
+    }
+}
